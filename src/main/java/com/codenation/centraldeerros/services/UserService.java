@@ -1,5 +1,7 @@
-package com.codenation.centraldeerros.domain;
+package com.codenation.centraldeerros.services;
 
+import com.codenation.centraldeerros.entities.User;
+import com.codenation.centraldeerros.repositories.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -20,11 +22,11 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public User save(User user) {
+    public User saveUser(User user) {
         return userRepository.save(user);
     }
 
-    public User update(User user, Long id) {
+    public User updateUser(User user, Long id) {
 
         Assert.notNull(id, "Update failed");
 
@@ -45,12 +47,12 @@ public class UserService {
         }
     }
 
-    public void delete(Long id) {
-        Optional<User>user = getUserById(id);
-        if(user.isPresent()) {
+    public boolean deleteUser(Long id) {
+        if(getUserById(id).isPresent()) {
             userRepository.deleteById(id);
+            return true;
         }
-
+        return false;
     }
 
 }

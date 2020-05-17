@@ -1,10 +1,13 @@
 package com.codenation.centraldeerros.controllers;
 
-import com.codenation.centraldeerros.domain.User;
-import com.codenation.centraldeerros.domain.UserService;
+import com.codenation.centraldeerros.entities.User;
+import com.codenation.centraldeerros.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Optional;
 
 @RestController
@@ -15,32 +18,55 @@ public class UserController {
     private UserService service;
 
     @GetMapping()
-    public Iterable<User> get() {
-        return service.getUsers();
+    public ResponseEntity<Iterable<User>> getUsers() {
+        return ResponseEntity.ok(service.getUsers());
     }
 
     @GetMapping("/{id}")
-    public Optional<User> get(@PathVariable("id") Long id) {
-        return service.getUserById(id);
+    public ResponseEntity<User> getUserById(@PathVariable("id") Long id) {
+
+        Optional<User> user = service.getUserById(id);
+
+        return user
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public String user(@RequestBody User user) {
-        User u = service.save(user);
+    public ResponseEntity postUser(@RequestBody User user) {
 
-        return "User saved with success: " + u.getEmail();
+        try {
+            User u = service.saveUser(user);
+            URI location = getUri(u.getId());
+            return ResponseEntity.created(location).build();
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    private URI getUri(Long id) {
+        return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(id).toUri();
     }
 
     @PutMapping("/{id}")
-    public String put(@PathVariable ("id") Long id, @RequestBody User user) {
-        User u = service.update(user, id);
+    public ResponseEntity putUser(@PathVariable ("id") Long id, @RequestBody User user) {
 
-        return "User updated with success: " + u.getEmail();
+        user.setId(id);
+
+        User u = service.updateUser(user, id);
+
+        return u != null ?
+                ResponseEntity.ok(u) :
+                ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") Long id) {
-        service.delete(id);
-        return "User deleted with success";
+    public ResponseEntity deleteUser(@PathVariable("id") Long id) {
+        boolean ok = service.deleteUser(id);
+
+        return ok ?
+                ResponseEntity.ok().build() :
+                ResponseEntity.notFound().build();
     }
 }

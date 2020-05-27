@@ -1,7 +1,7 @@
 package com.codenation.centraldeerros.services;
 
 import com.codenation.centraldeerros.entities.User;
-import com.codenation.centraldeerros.repositories.Repository;
+import com.codenation.centraldeerros.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -12,7 +12,7 @@ import java.util.Optional;
 public class UserService {
 
     @Autowired
-    private Repository userRepository;
+    private UserRepository userRepository;
 
     public Iterable<User> getUsers() {
         return userRepository.findAll();

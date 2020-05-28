@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -31,6 +32,8 @@ public class UserController {
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
     }
+
+    //inserir User userExists = userService.findByEmail(user.getEmail()); na parte de register
 
     @PostMapping
     public ResponseEntity postUser(@RequestBody User user) {

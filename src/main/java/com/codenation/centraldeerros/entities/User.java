@@ -1,6 +1,7 @@
 package com.codenation.centraldeerros.entities;
 
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -16,7 +17,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name="email", length = 50, nullable = false)
+    @Column(name="name", length = 50, nullable = false)
+    @NotNull(message = "O nome é obrigatório")
+    private String name;
+
+    @Column(name="email", length = 50, nullable = false, unique = true)
+    @Email(message = "Insira um e-mail válido")
     @NotNull(message = "O e-mail é obrigatório")
     private String email;
 

@@ -7,6 +7,8 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -31,5 +33,6 @@ public class User {
     @Length(max = 8, min = 6, message= "A senha deve conter entre 6 e 8 caracteres")
     private String password;
 
-
+    @OneToMany(mappedBy = "user")
+    private List<Log> logs;
 }

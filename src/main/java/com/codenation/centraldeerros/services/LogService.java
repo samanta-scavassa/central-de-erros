@@ -1,6 +1,8 @@
 package com.codenation.centraldeerros.services;
 
+import com.codenation.centraldeerros.entities.Environment;
 import com.codenation.centraldeerros.entities.Log;
+import com.codenation.centraldeerros.entities.User;
 import com.codenation.centraldeerros.repositories.LogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,15 +23,21 @@ public class LogService {
         return logRepository.findById(id);
     }
 
-    public Log getLogByLevel(String level) {
+    public Iterable<Log> getLogByLevel(String level) {
         return logRepository.findLogByLevel(level);
     }
 
-//    public Log getLogByDescription(String description) {
-//        return logRepository.findLogByDescription(description);
+    public Iterable<Log> getLogByDescription(String description) {
+        return logRepository.findLogByDescription(description);
+    }
 
-    //ambiente
-//    }
+    public Iterable<Log> getLogByUser(User user_id) {
+        return logRepository.findLogByUser(user_id);
+    }
+
+    public Iterable<Log> getLogByEnvironment(Environment environment_id) {
+        return logRepository.findLogByEnvironment(environment_id);
+    }
 
     public Log saveLog(Log log) {
         return logRepository.save(log);

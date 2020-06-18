@@ -1,11 +1,10 @@
 package com.codenation.centraldeerros.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
@@ -17,17 +16,26 @@ public class Log {
     private long id;
 
     @Column(name="level", length = 20, nullable = false)
+    @NotNull(message = "O level é obrigatório")
     private String level;
 
-    @Column(name="log", length = 100, nullable = false)
-    private String log;
+    @Column(name="description", length = 100, nullable = false)
+    @NotNull(message = "A descrição é obrigatória")
+    private String description;
 
     @Column(name="event", nullable = false)
+    @NotNull(message = "O event é obrigatório")
     private Long event;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JoinColumn(name = "environment_id", nullable = false)
+    private Environment environment;
 }

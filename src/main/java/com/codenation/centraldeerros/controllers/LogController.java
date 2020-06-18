@@ -1,5 +1,6 @@
 package com.codenation.centraldeerros.controllers;
 
+import com.codenation.centraldeerros.entities.Environment;
 import com.codenation.centraldeerros.entities.Log;
 import com.codenation.centraldeerros.entities.User;
 import com.codenation.centraldeerros.services.LogService;
@@ -29,6 +30,26 @@ public class LogController {
         return log
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/level/{level}")
+    public Iterable<Log> getLogByLevel(@PathVariable("level") String level) {
+        return service.getLogByLevel(level);
+    }
+
+    @GetMapping("/description/{description}")
+    public Iterable<Log> getLogByDescription(@PathVariable("description") String description) {
+        return service.getLogByDescription(description);
+    }
+
+    @GetMapping("/user/{user_id}")
+    public Iterable<Log> getLogByUser(@PathVariable("user_id") User user_id) {
+        return service.getLogByUser(user_id);
+    }
+
+    @GetMapping("/env/{environment_id}")
+    public Iterable<Log> getLogByUser(@PathVariable("environment_id") Environment environment_id) {
+        return service.getLogByEnvironment(environment_id);
     }
 
     private URI getUri(Long id) {

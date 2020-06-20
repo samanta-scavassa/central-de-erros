@@ -3,10 +3,16 @@ package com.codenation.centraldeerros.entities;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -31,5 +37,7 @@ public class User {
     @Length(max = 8, min = 6, message= "A senha deve conter entre 6 e 8 caracteres")
     private String password;
 
-
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Log> logs;
 }

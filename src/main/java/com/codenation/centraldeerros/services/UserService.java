@@ -1,17 +1,20 @@
 package com.codenation.centraldeerros.services;
 
-import com.codenation.centraldeerros.entities.User;
-import com.codenation.centraldeerros.repositories.UserRepository;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.List;
-import java.util.Optional;
+import com.codenation.centraldeerros.entities.User;
+import com.codenation.centraldeerros.repositories.UserRepository;
 
 @Service
 public class UserService {
-
+	@Autowired
+	private  BCryptPasswordEncoder pe;
+	
     @Autowired
     private UserRepository userRepository;
 
@@ -28,6 +31,7 @@ public class UserService {
     }
 
     public User saveUser(User user) {
+    	user.setPassword(pe.encode(user.getPassword()));
         return userRepository.save(user);
     }
 

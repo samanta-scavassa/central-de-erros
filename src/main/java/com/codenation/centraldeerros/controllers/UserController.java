@@ -15,6 +15,7 @@ import java.util.Optional;
 @RequestMapping("/api/users")
 public class UserController {
 
+	
     @Autowired
     private UserService service;
 
@@ -39,6 +40,9 @@ public class UserController {
     public ResponseEntity postUser(@RequestBody User user) {
 
         try {
+        	
+        	//user.getPassword(pe.encode(user.getPassword()));
+        	
             User u = service.saveUser(user);
             URI location = getUri(u.getId());
             return ResponseEntity.created(location).build();

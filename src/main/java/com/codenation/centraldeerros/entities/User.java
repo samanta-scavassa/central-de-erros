@@ -34,7 +34,7 @@ public class User {
 
     @Column(name="password", length = 8, nullable = false)
     @NotNull(message = "A senha é obrigatória")
-    @Length(max = 8, min = 6, message= "A senha deve conter entre 6 e 8 caracteres")
+    //@Length(max = 8, min = 6, message= "A senha deve conter entre 6 e 8 caracteres")
     private String password;
 
     @OneToMany(mappedBy = "user")

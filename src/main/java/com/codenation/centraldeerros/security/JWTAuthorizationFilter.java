@@ -31,7 +31,7 @@ public class JWTAuthorizationFilter  extends BasicAuthenticationFilter{
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,
 			HttpServletResponse response, 
-			FilterChain chain) throws AuthenticationException, IOException, ServletException{
+			FilterChain chain) throws IOException, ServletException{
 		
 		String header = request.getHeader("Authorization");
 		

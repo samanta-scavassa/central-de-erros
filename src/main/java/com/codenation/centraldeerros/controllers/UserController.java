@@ -34,15 +34,10 @@ public class UserController {
             .orElse(ResponseEntity.notFound().build());
     }
 
-    //inserir User userExists = userService.findByEmail(user.getEmail()); na parte de register
-
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity postUser(@RequestBody User user) {
 
         try {
-        	
-        	//user.getPassword(pe.encode(user.getPassword()));
-        	
             User u = service.saveUser(user);
             URI location = getUri(u.getId());
             return ResponseEntity.created(location).build();

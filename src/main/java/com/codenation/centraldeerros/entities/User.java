@@ -7,17 +7,22 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "user_register")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,12 +37,51 @@ public class User {
     @NotNull(message = "O e-mail é obrigatório")
     private String email;
 
-    @Column(name="password", length = 8, nullable = false)
+    @Column(name="password", nullable = false)
     @NotNull(message = "A senha é obrigatória")
-    //@Length(max = 8, min = 6, message= "A senha deve conter entre 6 e 8 caracteres")
     private String password;
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Log> logs;
+
+    public User(String email, String password){
+        this.email = email;
+        this.password = password;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

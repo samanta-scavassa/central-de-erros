@@ -2,6 +2,7 @@ package com.codenation.centraldeerros.services;
 
 import java.util.Optional;
 
+import com.codenation.centraldeerros.security.WebSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,8 +13,9 @@ import com.codenation.centraldeerros.repositories.UserRepository;
 
 @Service
 public class UserService {
-	@Autowired
-	private  BCryptPasswordEncoder pe;
+
+    @Autowired
+    private WebSecurityConfig webSecurityConfig;
 	
     @Autowired
     private UserRepository userRepository;
@@ -31,7 +33,7 @@ public class UserService {
     }
 
     public User saveUser(User user) {
-    	user.setPassword(pe.encode(user.getPassword()));
+        user.setPassword(webSecurityConfig.passwordEncoder().encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -52,7 +54,7 @@ public class UserService {
 
             return db;
         } else {
-            throw new RuntimeException("Update failed");
+            return null;
         }
     }
 

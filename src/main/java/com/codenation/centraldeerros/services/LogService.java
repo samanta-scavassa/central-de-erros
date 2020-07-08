@@ -5,8 +5,10 @@ import com.codenation.centraldeerros.entities.Log;
 import com.codenation.centraldeerros.entities.User;
 import com.codenation.centraldeerros.repositories.LogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,5 +43,9 @@ public class LogService {
 
     public Log saveLog(Log log) {
         return logRepository.save(log);
+    }
+
+    public Iterable<Log> getLogByLevelOrder() {
+        return logRepository.findAllByOrderByLevelAsc();
     }
 }

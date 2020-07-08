@@ -2,20 +2,18 @@ package com.codenation.centraldeerros.controllers;
 
 import com.codenation.centraldeerros.entities.User;
 import com.codenation.centraldeerros.services.UserService;
+import com.codenation.centraldeerros.utilities.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
-	
     @Autowired
     private UserService service;
 
@@ -30,8 +28,8 @@ public class UserController {
         Optional<User> user = service.getUserById(id);
 
         return user
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/register")
@@ -39,20 +37,15 @@ public class UserController {
 
         try {
             User u = service.saveUser(user);
-            URI location = getUri(u.getId());
+            URI location = Uri.getUri(u.getId());
             return ResponseEntity.created(location).build();
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    private URI getUri(Long id) {
-        return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(id).toUri();
-    }
-
     @PutMapping("/{id}")
-    public ResponseEntity putUser(@PathVariable ("id") Long id, @RequestBody User user) {
+    public ResponseEntity putUser(@PathVariable("id") Long id, @RequestBody User user) {
 
         user.setId(id);
 

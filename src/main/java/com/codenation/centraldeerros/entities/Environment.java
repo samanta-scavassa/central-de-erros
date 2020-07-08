@@ -2,11 +2,9 @@ package com.codenation.centraldeerros.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.List;
 
 @Data
@@ -18,7 +16,7 @@ public class Environment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name="name", length = 50, nullable = false)
+    @Column(name = "name", length = 50, nullable = false)
     @NotNull(message = "O nome é obrigatório")
     private String name;
 

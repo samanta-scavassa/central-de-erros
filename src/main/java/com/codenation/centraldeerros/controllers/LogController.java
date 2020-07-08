@@ -4,13 +4,15 @@ import com.codenation.centraldeerros.entities.Environment;
 import com.codenation.centraldeerros.entities.Log;
 import com.codenation.centraldeerros.entities.User;
 import com.codenation.centraldeerros.services.LogService;
+import com.codenation.centraldeerros.utilities.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -49,27 +51,22 @@ public class LogController {
     }
 
     @GetMapping("/user/{user_id}")
-    public Iterable<Log> getLogByUser(@PathVariable("user_id") User user_id) {
-        return service.getLogByUser(user_id);
+    public Iterable<Log> getLogByUser(@PathVariable("user_id") User userId) {
+        return service.getLogByUser(userId);
     }
 
     @GetMapping("/env/{environment_id}")
-    public Iterable<Log> getLogByUser(@PathVariable("environment_id") Environment environment_id) {
-        return service.getLogByEnvironment(environment_id);
-    }
-
-    private URI getUri(Long id) {
-        return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(id).toUri();
+    public Iterable<Log> getLogByUser(@PathVariable("environment_id") Environment environmentId) {
+        return service.getLogByEnvironment(environmentId);
     }
 
     @PostMapping
     public ResponseEntity postLog(@Valid  @RequestBody Log log) {
         try {
             Log l = service.saveLog(log);
-            URI location = getUri(l.getId());
+            URI location = Uri.getUri(l.getId());
             return ResponseEntity.created(location).build();
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }

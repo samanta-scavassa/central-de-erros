@@ -26,8 +26,8 @@ public class LogService {
         return logRepository.findById(id);
     }
 
-    public Iterable<Log> getLogByLevel(String level) {
-        return logRepository.findLogByLevel(level);
+    public Iterable<Log> getLogByLevel(Long userId, Long environmentId, String level) {
+        return logRepository.findLogByLevel(userId, environmentId, level);
     }
 
     public Iterable<Log> getLogByDescription(Long userId, Long environmentId, String description) {
@@ -45,5 +45,9 @@ public class LogService {
 
     public Iterable<Log> getLogByLevelOrder(Long userId, Long environmentId) {
         return logRepository.findLogByLevelOrder(userId, environmentId);
+    }
+
+    public Iterable<Log> getLogByFrequencyOrder(Long userId, Long environmentId) {
+        return logRepository.findAllByOrderByFrequency(userId, environmentId);
     }
 }

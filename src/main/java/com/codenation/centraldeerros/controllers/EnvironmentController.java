@@ -3,10 +3,10 @@ package com.codenation.centraldeerros.controllers;
 
 import com.codenation.centraldeerros.entities.Environment;
 import com.codenation.centraldeerros.services.EnvironmentService;
+import com.codenation.centraldeerros.utilities.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Optional;
@@ -38,20 +38,15 @@ public class EnvironmentController {
 
         try {
             Environment env = service.saveEnvironment(environment);
-            URI location = getUri(env.getId());
+            URI location = Uri.getUri(env.getId());
             return ResponseEntity.created(location).build();
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    private URI getUri(Long id) {
-        return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(id).toUri();
-    }
-
     @PutMapping("/{id}")
-    public ResponseEntity putEnvironment(@PathVariable ("id") Long id, @RequestBody Environment environment) {
+    public ResponseEntity putEnvironment(@PathVariable("id") Long id, @RequestBody Environment environment) {
 
         environment.setId(id);
 

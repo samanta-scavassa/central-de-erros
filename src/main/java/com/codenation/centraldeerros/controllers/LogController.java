@@ -8,14 +8,11 @@ import com.codenation.centraldeerros.services.LogService;
 import com.codenation.centraldeerros.services.UserService;
 import com.codenation.centraldeerros.utilities.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -45,20 +42,47 @@ public class LogController {
     }
 
 
-    @GetMapping("/level/{level}")
-    public Iterable<Log> getLogByLevel(@PathVariable("level") String level) {
-        return service.getLogByLevel(level);
-    }
-
-    @GetMapping("user/{user_id}/env/{environment_id}/levelOrder")
-    public ResponseEntity<Iterable<Log>> getLogByLevelOrder(@PathVariable("user_id") Long userId, @PathVariable("environment_id") Long environmentId){
+    @GetMapping("/{user_id}/{environment_id}/level/{level}")
+    public ResponseEntity<Iterable<Log>> getLogByLevel(@PathVariable("user_id") Long userId, @PathVariable("environment_id") Long environmentId, @PathVariable("level") String level) {
 
         Optional<User> user = userService.getUserById(userId);
         if (!user.isPresent()) {
             return ResponseEntity.notFound().build();
         }
         Optional<Environment> env = environmentService.getEnvironmentById(environmentId);
-        if (!env.isPresent()){
+        if (!env.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Iterable<Log> log = service.getLogByLevel(userId, environmentId, level);
+        return ResponseEntity.ok(log);
+    }
+
+    @GetMapping("/{user_id}/{environment_id}/frequencyOrder")
+    public ResponseEntity<Iterable<Log>> getLogByFrequencyOrder(@PathVariable("user_id") Long userId, @PathVariable("environment_id") Long environmentId) {
+
+        Optional<User> user = userService.getUserById(userId);
+        if (!user.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Optional<Environment> env = environmentService.getEnvironmentById(environmentId);
+        if (!env.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Iterable<Log> log = service.getLogByFrequencyOrder(userId, environmentId);
+        return ResponseEntity.ok(log);
+    }
+
+    @GetMapping("user/{user_id}/env/{environment_id}/levelOrder")
+    public ResponseEntity<Iterable<Log>> getLogByLevelOrder(@PathVariable("user_id") Long userId, @PathVariable("environment_id") Long environmentId) {
+
+        Optional<User> user = userService.getUserById(userId);
+        if (!user.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Optional<Environment> env = environmentService.getEnvironmentById(environmentId);
+        if (!env.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
@@ -74,7 +98,7 @@ public class LogController {
             return ResponseEntity.notFound().build();
         }
         Optional<Environment> env = environmentService.getEnvironmentById(environmentId);
-        if (!env.isPresent()){
+        if (!env.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
@@ -90,7 +114,7 @@ public class LogController {
             return ResponseEntity.notFound().build();
         }
         Optional<Environment> env = environmentService.getEnvironmentById(environmentId);
-        if (!env.isPresent()){
+        if (!env.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
@@ -99,7 +123,7 @@ public class LogController {
     }
 
     @PostMapping
-    public ResponseEntity postLog(@Valid  @RequestBody Log log) {
+    public ResponseEntity postLog(@Valid @RequestBody Log log) {
         try {
             Log l = service.saveLog(log);
             URI location = Uri.getUri(l.getId());

@@ -3,7 +3,9 @@ package com.codenation.centraldeerros.controllers;
 import com.codenation.centraldeerros.entities.Environment;
 import com.codenation.centraldeerros.entities.Log;
 import com.codenation.centraldeerros.entities.User;
+import com.codenation.centraldeerros.services.EnvironmentService;
 import com.codenation.centraldeerros.services.LogService;
+import com.codenation.centraldeerros.services.UserService;
 import com.codenation.centraldeerros.utilities.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +24,12 @@ public class LogController {
 
     @Autowired
     private LogService service;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    EnvironmentService environmentService;
 
     @GetMapping()
     public ResponseEntity<Iterable<Log>> getLogs() {
@@ -35,29 +44,58 @@ public class LogController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+
     @GetMapping("/level/{level}")
     public Iterable<Log> getLogByLevel(@PathVariable("level") String level) {
         return service.getLogByLevel(level);
     }
 
-    @GetMapping("/levelOrder")
-    public Iterable<Log> getLogByLevelOrder(){
-        return service.getLogByLevelOrder();
+    @GetMapping("user/{user_id}/env/{environment_id}/levelOrder")
+    public ResponseEntity<Iterable<Log>> getLogByLevelOrder(@PathVariable("user_id") Long userId, @PathVariable("environment_id") Long environmentId){
+
+        Optional<User> user = userService.getUserById(userId);
+        if (!user.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Optional<Environment> env = environmentService.getEnvironmentById(environmentId);
+        if (!env.isPresent()){
+            return ResponseEntity.notFound().build();
+        }
+
+        Iterable<Log> log = service.getLogByLevelOrder(userId, environmentId);
+        return ResponseEntity.ok(log);
     }
 
-    @GetMapping("/description/{description}")
-    public Iterable<Log> getLogByDescription(@PathVariable("description") String description) {
-        return service.getLogByDescription(description);
+    @GetMapping("user/{user_id}/env/{environment_id}/description/{description}")
+    public ResponseEntity<Iterable<Log>> getLogByDescription(@PathVariable("user_id") Long userId, @PathVariable("environment_id") Long environmentId, @PathVariable("description") String description) {
+
+        Optional<User> user = userService.getUserById(userId);
+        if (!user.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Optional<Environment> env = environmentService.getEnvironmentById(environmentId);
+        if (!env.isPresent()){
+            return ResponseEntity.notFound().build();
+        }
+
+        Iterable<Log> log = service.getLogByDescription(userId, environmentId, description);
+        return ResponseEntity.ok(log);
     }
 
-    @GetMapping("/user/{user_id}")
-    public Iterable<Log> getLogByUser(@PathVariable("user_id") User userId) {
-        return service.getLogByUser(userId);
-    }
+    @GetMapping("/user/{user_id}/env/{environment_id}")
+    public ResponseEntity<Iterable<Log>> getLogByEnvironment(@PathVariable("user_id") Long userId, @PathVariable("environment_id") Long environmentId) {
 
-    @GetMapping("/env/{environment_id}")
-    public Iterable<Log> getLogByUser(@PathVariable("environment_id") Environment environmentId) {
-        return service.getLogByEnvironment(environmentId);
+        Optional<User> user = userService.getUserById(userId);
+        if (!user.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Optional<Environment> env = environmentService.getEnvironmentById(environmentId);
+        if (!env.isPresent()){
+            return ResponseEntity.notFound().build();
+        }
+
+        Iterable<Log> log = service.getLogByEnvironment(userId, environmentId);
+        return ResponseEntity.ok(log);
     }
 
     @PostMapping

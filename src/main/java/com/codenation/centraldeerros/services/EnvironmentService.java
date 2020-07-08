@@ -42,7 +42,7 @@ public class EnvironmentService {
 
             return db;
         } else {
-            throw new RuntimeException("Update failed");
+            return null;
         }
     }
 

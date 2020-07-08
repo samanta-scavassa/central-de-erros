@@ -6,6 +6,7 @@ import com.codenation.centraldeerros.entities.User;
 import com.codenation.centraldeerros.repositories.LogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -29,23 +30,20 @@ public class LogService {
         return logRepository.findLogByLevel(level);
     }
 
-    public Iterable<Log> getLogByDescription(String description) {
-        return logRepository.findLogByDescription(description);
+    public Iterable<Log> getLogByDescription(Long userId, Long environmentId, String description) {
+        description = description.toLowerCase();
+        return logRepository.findLogByDescription(userId, environmentId, description);
     }
 
-    public Iterable<Log> getLogByUser(User userId) {
-        return logRepository.findLogByUser(userId);
-    }
-
-    public Iterable<Log> getLogByEnvironment(Environment environmentId) {
-        return logRepository.findLogByEnvironment(environmentId);
+    public Iterable<Log> getLogByEnvironment(Long userId, Long environmentId) {
+        return logRepository.findLogByEnvironment(userId, environmentId);
     }
 
     public Log saveLog(Log log) {
         return logRepository.save(log);
     }
 
-    public Iterable<Log> getLogByLevelOrder() {
-        return logRepository.findAllByOrderByLevelAsc();
+    public Iterable<Log> getLogByLevelOrder(Long userId, Long environmentId) {
+        return logRepository.findLogByLevelOrder(userId, environmentId);
     }
 }

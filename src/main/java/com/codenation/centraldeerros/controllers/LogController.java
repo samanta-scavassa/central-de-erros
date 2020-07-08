@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
@@ -37,6 +38,11 @@ public class LogController {
         return service.getLogByLevel(level);
     }
 
+    @GetMapping("/levelOrder")
+    public Iterable<Log> getLogByLevelOrder(){
+        return service.getLogByLevelOrder();
+    }
+
     @GetMapping("/description/{description}")
     public Iterable<Log> getLogByDescription(@PathVariable("description") String description) {
         return service.getLogByDescription(description);
@@ -58,7 +64,7 @@ public class LogController {
     }
 
     @PostMapping
-    public ResponseEntity postLog(@RequestBody Log log) {
+    public ResponseEntity postLog(@Valid  @RequestBody Log log) {
         try {
             Log l = service.saveLog(log);
             URI location = getUri(l.getId());
